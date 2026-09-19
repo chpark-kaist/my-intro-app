@@ -155,15 +155,19 @@ async def weather(
     if hit and time.time() - hit[0] < WEATHER_TTL:
         return hit[1]
     try:
-        async with httpx.AsyncClient(timeout=6) as client:
+        async with httpx.AsyncClient(timeout=8, headers={"User-Agent": "my-intro-api/1.0 (class project)"}) as client:
             r = await client.get(
                 "https://api.open-meteo.com/v1/forecast",
                 params={"latitude": key[0], "longitude": key[1], "current": "temperature_2m,weather_code,is_day"},
             )
             r.raise_for_status()
             cur = r.json()["current"]
-    except (httpx.HTTPError, KeyError, ValueError):
-        raise HTTPException(status_code=502, detail="날씨 서버에 연결하지 못했습니다")
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=502, detail=f"날씨 서버가 오류를 돌려줬습니다 (HTTP {e.response.status_code})")
+    except httpx.HTTPError as e:
+        raise HTTPException(status_code=502, detail=f"날씨 서버에 연결하지 못했습니다 ({type(e).__name__})")
+    except (KeyError, ValueError):
+        raise HTTPException(status_code=502, detail="날씨 응답을 해석하지 못했습니다")
     label, icon = WMO.get(int(cur.get("weather_code", -1)), ("알 수 없음", "🌡️"))
     data = {
         "temp_c": round(float(cur["temperature_2m"]), 1),
