@@ -4,25 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>박찬휘 | 자기소개</title>
-  <meta name="description" content="한국채권투자운용 박찬휘의 개인 소개 페이지" />
+  <meta name="description" content="달리고, 페달을 밟고, 떠나는 사람. 한국채권투자운용 박찬휘의 개인 소개 페이지" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8C%8F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="intro.css" />
   <script>
-    // 첫 화면이 번쩍이지 않도록 저장된 테마를 먼저 적용
+    // 첫 화면이 번쩍이지 않도록 저장된 테마를 먼저 적용하고, JS가 켜져 있음을 표시
+    document.documentElement.classList.add("js");
     try {
       const t = localStorage.getItem("theme");
       if (t) document.documentElement.dataset.theme = t;
     } catch (_) {}
   </script>
 </head>
-<body>
+<body class="intro">
   <header class="site-header">
     <div class="wrap bar">
       <a class="brand" href="#top">박찬휘</a>
       <nav aria-label="주요 메뉴">
         <a href="#about">소개</a>
-        <a href="#interests">관심사</a>
+        <a href="#map">지도</a>
+        <a href="#moves">관심사</a>
         <a href="#practice">실습</a>
         <a href="#links">연락</a>
         <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">
@@ -34,27 +38,46 @@
   </header>
 
   <main id="top">
-    <!-- 히어로 -->
+    <!-- 히어로: 낮의 도로 ↔ 밤의 은하수 (테마 버튼으로 전환) -->
     <section class="hero">
-      <div class="wrap">
+      <div class="hero-bg" aria-hidden="true">
+        <img class="day" src="media/img/mn-road.webp" alt="" width="2200" height="2200" fetchpriority="high" />
+        <img class="night" src="media/img/mn-stars.webp" alt="" width="2200" height="1467" />
+      </div>
+      <div class="wrap hero-inner">
         <p class="eyebrow">한국채권투자운용 · 디지털금융 MBA</p>
-        <h1>안녕하세요,<br /><span class="grad">박찬휘</span>입니다.</h1>
+        <h1>
+          <span class="line"><span>안녕하세요,</span></span>
+          <span class="line"><span><em class="grad">박찬휘</em>입니다.</span></span>
+        </h1>
         <p class="lead">
-          클라우드 컴퓨팅 수업에서 처음으로 나만의 홈페이지를 만들어 보고 있습니다.
+          달리고, 페달을 밟고, 떠나는 사람.<br />
+          클라우드 위에 처음 올려 보는 저의 지도입니다.
         </p>
         <div class="cta">
-          <a class="btn primary" href="#about">소개 보기</a>
-          <a class="btn ghost" href="api-demo.html">연동 실습 페이지 →</a>
+          <a class="btn primary" href="#map">지도 열어보기</a>
+          <a class="btn glass" href="api-demo.html">연동 실습 페이지 →</a>
         </div>
       </div>
+      <ul class="hero-stats wrap" aria-label="여행 기록 요약">
+        <li><b data-stat="countries">0</b><span>나라</span></li>
+        <li><b data-stat="places">0</b><span>도시·지역</span></li>
+        <li><b data-stat="media">0</b><span>사진·영상</span></li>
+        <li><b data-stat="span">–</b><span>기록</span></li>
+      </ul>
+      <a class="scroll-cue" href="#about" aria-label="아래로 스크롤"><span></span></a>
     </section>
 
     <!-- 소개 -->
     <section id="about" class="section">
       <div class="wrap">
-        <h2 class="title"><span class="num">01</span>소개</h2>
-        <div class="about-grid">
-          <div>
+        <h2 class="title reveal"><span class="num">01</span>소개</h2>
+        <div class="about-wrap">
+          <figure class="polaroid reveal tilt">
+            <img src="media/img/mn-goat.webp" alt="염소 옆에 쪼그려 앉아 웃는 모습" width="960" height="720" loading="lazy" />
+            <figcaption>몽골 초원에서</figcaption>
+          </figure>
+          <div class="about-body reveal">
             <p class="about-text">
               한국채권투자운용에서 근무하며 디지털금융 MBA 과정에 재학 중인 박찬휘입니다.
             </p>
@@ -63,27 +86,64 @@
               이번 클라우드 컴퓨팅 수업을 통해 이런 홈페이지를 만들어 보는 것은 처음이라 아직은 낯설고 서툽니다.
               그래도 하나씩 배우며 직접 만들어 가고 있으니, 잘 부탁드립니다!
             </blockquote>
+            <dl class="facts">
+              <div><dt>이름</dt><dd>박찬휘</dd></div>
+              <div><dt>생년월일</dt><dd>1992.01.22</dd></div>
+              <div><dt>혈액형 · MBTI</dt><dd>AB형 · ISFP</dd></div>
+              <div><dt>직장</dt><dd>한국채권투자운용</dd></div>
+              <div><dt>과정</dt><dd>디지털금융 MBA</dd></div>
+            </dl>
           </div>
-          <dl class="facts">
-            <div><dt>이름</dt><dd>박찬휘</dd></div>
-            <div><dt>생년월일</dt><dd>1992.01.22</dd></div>
-            <div><dt>혈액형</dt><dd>AB형</dd></div>
-            <div><dt>MBTI</dt><dd>ISFP</dd></div>
-            <div><dt>직장</dt><dd>한국채권투자운용</dd></div>
-            <div><dt>과정</dt><dd>디지털금융 MBA</dd></div>
-          </dl>
         </div>
       </div>
     </section>
 
-    <!-- 관심사 -->
-    <section id="interests" class="section">
-      <div class="wrap">
-        <h2 class="title"><span class="num">02</span>관심사</h2>
-        <div class="grid three">
-          <article class="card"><span class="idx">🏃</span><h3>러닝</h3></article>
-          <article class="card"><span class="idx">🚴</span><h3>자전거 타기</h3></article>
-          <article class="card"><span class="idx">✈️</span><h3>여행</h3></article>
+    <!-- 인터랙티브 지도 -->
+    <section id="map" class="section map-section">
+      <div class="wrap wide">
+        <h2 class="title reveal"><span class="num">02</span>나의 지도</h2>
+        <p class="sub reveal">
+          핀을 눌러 그곳의 사진과 영상을 열어 보세요. 아니면 여정을 처음부터 재생해 볼 수도 있어요.
+        </p>
+
+        <div class="map-wrap reveal">
+          <div class="map-stage" id="mapStage" role="group" aria-label="여행 지도">
+            <canvas id="mapDots" aria-hidden="true"></canvas>
+            <canvas id="mapFx" aria-hidden="true"></canvas>
+            <div class="pins"></div>
+            <div class="map-ui">
+              <button id="btnPlay" class="chip-btn" type="button" aria-pressed="false">▶ 여정 재생</button>
+              <button id="btnWorld" class="chip-btn" type="button">🌍 전체 보기</button>
+            </div>
+            <p class="map-hint" id="mapHint">핀을 눌러 보세요</p>
+          </div>
+          <aside class="trip-panel" id="tripPanel" aria-live="polite" hidden></aside>
+        </div>
+
+        <div class="timeline reveal" id="timeline" role="list" aria-label="여행 목록"></div>
+      </div>
+    </section>
+
+    <!-- 러닝 · 자전거 · 여행 -->
+    <section id="moves" class="section">
+      <div class="wrap wide">
+        <h2 class="title reveal"><span class="num">03</span>관심사</h2>
+        <div class="moves">
+          <button class="move-card tilt reveal" type="button" data-interest="run" aria-label="러닝 사진과 영상 열기">
+            <video muted loop playsinline preload="none" poster="media/vid/run-sea.jpg" data-src="media/vid/run-sea.mp4" data-autoplay></video>
+            <span class="mc-shade"></span>
+            <span class="mc-body"><small>01</small><strong>러닝</strong><em>바다 앞 방파제에서</em></span>
+          </button>
+          <button class="move-card tilt reveal" type="button" data-interest="bike" aria-label="자전거 사진과 영상 열기">
+            <video muted loop playsinline preload="none" poster="media/vid/cycling-pov.jpg" data-src="media/vid/cycling-pov.mp4" data-autoplay></video>
+            <span class="mc-shade"></span>
+            <span class="mc-body"><small>02</small><strong>자전거</strong><em>접이식 자전거와 함께</em></span>
+          </button>
+          <button class="move-card tilt reveal" type="button" data-interest="travel" aria-label="여행 사진과 영상 열기">
+            <video muted loop playsinline preload="none" poster="media/vid/kyushu-train.jpg" data-src="media/vid/kyushu-train.mp4" data-autoplay></video>
+            <span class="mc-shade"></span>
+            <span class="mc-body"><small>03</small><strong>여행</strong><em>2017년부터 계속 이어지는 중</em></span>
+          </button>
         </div>
       </div>
     </section>
@@ -91,8 +151,8 @@
     <!-- 연동 실습으로 이동 -->
     <section id="practice" class="section">
       <div class="wrap">
-        <h2 class="title"><span class="num">03</span>클라우드 컴퓨팅 실습</h2>
-        <a class="link-card" href="api-demo.html">
+        <h2 class="title reveal"><span class="num">04</span>클라우드 컴퓨팅 실습</h2>
+        <a class="link-card reveal" href="api-demo.html">
           <div>
             <h3>프론트엔드 ↔ 백엔드 연동 실습</h3>
             <p>Vercel에 배포한 이 페이지에서 Render의 FastAPI 백엔드를 호출해 봅니다.</p>
@@ -111,8 +171,8 @@
     <!-- 연락 -->
     <section id="links" class="section">
       <div class="wrap">
-        <h2 class="title"><span class="num">04</span>연락 · 링크</h2>
-        <div class="cta">
+        <h2 class="title reveal"><span class="num">05</span>연락 · 링크</h2>
+        <div class="cta reveal">
           <a class="btn ghost" href="https://github.com/chpark-kaist" target="_blank" rel="noopener">GitHub</a>
           <a class="btn ghost" href="mailto:utubeonly4one@gmail.com">이메일</a>
         </div>
@@ -122,10 +182,15 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>© 2026 박찬휘 · 클라우드 컴퓨팅 과제</p>
+      <p>© 2026 박찬휘 · 클라우드 컴퓨팅 과제 · 지도의 위치는 도시 단위의 대략적인 표시입니다.</p>
     </div>
   </footer>
 
   <script src="theme.js"></script>
+  <script src="data.js"></script>
+  <script src="map-data.js"></script>
+  <script src="lightbox.js"></script>
+  <script src="map.js"></script>
+  <script src="intro.js"></script>
 </body>
 </html>

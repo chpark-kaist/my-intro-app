@@ -12,3 +12,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# 원본 사진/영상 (GPS 위치정보 포함 가능 - 절대 커밋하지 않음)
+frontend/images/
+_raw/
