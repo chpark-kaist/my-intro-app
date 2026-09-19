@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>박찬휘 | 자기소개</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>박찬휘</h1>
+    <nav>
+      <a href="#about">소개</a>
+      <a href="#interests">관심사</a>
+      <a href="#links">링크</a>
+      <a href="#api">API 연동</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about" class="card">
+      <h2>안녕하세요 👋</h2>
+      <!-- ★ 아래 문장을 본인 내용으로 자유롭게 바꾸세요 -->
+      <p>
+        디지털금융 MBA 과정에 재학 중인 박찬휘입니다.
+        클라우드 컴퓨팅 수업에서 웹 서비스를 직접 만들고 배포하는 과정을 배우고 있습니다.
+      </p>
+    </section>
+
+    <section id="interests" class="card">
+      <h2>관심사</h2>
+      <ul>
+        <li>디지털 금융</li>
+        <li>클라우드 컴퓨팅</li>
+        <li>웹 서비스 개발 입문</li>
+      </ul>
+    </section>
+
+    <section id="links" class="card">
+      <h2>링크</h2>
+      <ul>
+        <!-- ★ YOUR_GITHUB_ID 를 본인 GitHub 아이디로 바꾸세요 -->
+        <li><a href="https://github.com/YOUR_GITHUB_ID" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="mailto:utubeonly4one@gmail.com">이메일</a></li>
+      </ul>
+    </section>
+
+    <section id="api" class="card">
+      <h2>프론트엔드 ↔ 백엔드 연동 실습</h2>
+      <p class="note">
+        아래 버튼을 누르면 이 페이지(Vercel)가 백엔드(Render, FastAPI)에 요청을 보냅니다.
+        백엔드가 잠들어 있으면 첫 응답에 30~60초 걸릴 수 있습니다.
+      </p>
+
+      <div class="block">
+        <h3>1. 서버 상태 확인</h3>
+        <button id="btn-health" type="button">상태 확인</button>
+        <pre id="out-health" class="out"></pre>
+      </div>
+
+      <div class="block">
+        <h3>2. 인사 받기</h3>
+        <form id="form-hello">
+          <input id="input-hello" type="text" placeholder="이름을 입력하세요" maxlength="20" />
+          <button type="submit">인사 요청</button>
+        </form>
+        <pre id="out-hello" class="out"></pre>
+      </div>
+
+      <div class="block">
+        <h3>3. 방명록</h3>
+        <form id="form-guestbook">
+          <input id="gb-name" type="text" placeholder="이름" maxlength="20" required />
+          <input id="gb-message" type="text" placeholder="남기고 싶은 말" maxlength="200" required />
+          <button type="submit">등록</button>
+        </form>
+        <p id="gb-status" class="note"></p>
+        <ul id="gb-list" class="gb-list"></ul>
+      </div>
+
+      <p>
+        <a id="link-docs" href="#" target="_blank" rel="noopener">백엔드 Swagger UI(/docs) 열기 →</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 박찬휘 · 클라우드 컴퓨팅 과제</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
