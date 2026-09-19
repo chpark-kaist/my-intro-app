@@ -7,6 +7,7 @@
   const cache = new Map();          // 좌표 -> { w, at }
   const TTL = 10 * 60 * 1000;
   let token = 0;
+  const SOURCES = { "Open-Meteo": "https://open-meteo.com/", "MET Norway": "https://www.met.no/en" };  // 날씨 데이터 출처 표기
 
   function localTime(tz) {
     try {
@@ -26,10 +27,10 @@
     if (w) {
       const src = document.createElement("a");
       src.className = "src";
-      src.href = "https://open-meteo.com/";
+      src.href = SOURCES[w.source] || "https://open-meteo.com/";
       src.target = "_blank";
       src.rel = "noopener";
-      src.textContent = "Open-Meteo";
+      src.textContent = w.source || "Open-Meteo";
       el.append(" ", src);
     }
   }

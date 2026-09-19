@@ -60,7 +60,7 @@ my-intro-app/
 | GET | `/api/hello?name=` | 인사 메시지 | 연동 실습 |
 | GET/POST | `/api/guestbook` | 방명록 조회/등록 (메모리 저장) | 연동 실습 |
 | GET | `/api/trips` | 여행 목록 + 통계(이어 붙인 직선거리, 지구 몇 바퀴, 가장 먼 구간) | 소개 페이지의 지도 |
-| GET | `/api/weather?lat=&lon=` | 좌표의 현재 날씨. 서버가 무료 Open-Meteo API를 대신 호출하고 10분간 캐시 | 지도의 핀 패널 |
+| GET | `/api/weather?lat=&lon=` | 좌표의 현재 날씨. 서버가 무료 Open-Meteo API를 대신 호출하고(요청 제한 시 MET Norway로 대체) 10분간 캐시 | 지도의 핀 패널 |
 | GET/POST | `/api/postcards` | 방문자 엽서 조회/등록. IP당 1분에 5장, 최대 200장 보관 | 지도의 엽서 핀 |
 | DELETE | `/api/postcards/{id}` | 관리용 삭제. 환경변수 `ADMIN_TOKEN`과 헤더 `X-Admin-Token`이 같을 때만 동작 | Swagger에서 관리 |
 

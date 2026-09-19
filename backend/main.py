@@ -144,40 +144,85 @@ _weather_cache: dict[tuple[float, float], tuple[float, dict]] = {}
 WEATHER_TTL = 600  # 10분
 
 
+UA = {"User-Agent": "my-intro-api/1.0 github.com/chpark-kaist/my-intro-app (class project)"}
+
+
+async def fetch_open_meteo(client: httpx.AsyncClient, lat: float, lon: float) -> dict:
+    r = await client.get(
+        "https://api.open-meteo.com/v1/forecast",
+        params={"latitude": lat, "longitude": lon, "current": "temperature_2m,weather_code,is_day"},
+    )
+    r.raise_for_status()
+    cur = r.json()["current"]
+    label, icon = WMO.get(int(cur.get("weather_code", -1)), ("알 수 없음", "🌡️"))
+    return {"temp_c": round(float(cur["temperature_2m"]), 1), "label": label, "icon": icon,
+            "is_day": bool(cur.get("is_day", 1)), "source": "Open-Meteo"}
+
+
+def met_label(symbol: str) -> tuple[str, str]:
+    """MET Norway 의 symbol_code (예: partlycloudy_day) 를 한글 설명과 아이콘으로"""
+    is_day = not symbol.endswith("_night")
+    base = symbol.split("_")[0]
+    if "thunder" in base:
+        return "천둥번개", "⛈️"
+    if "sleet" in base:
+        return "진눈깨비", "🌨️"
+    if "snow" in base:
+        return "눈", "🌨️" if "light" in base else "❄️"
+    if "showers" in base:
+        return "소나기", "🌦️"
+    if "rain" in base:
+        return ("강한 비", "🌧️") if "heavy" in base else ("약한 비", "🌦️") if "light" in base else ("비", "🌧️")
+    table = {
+        "clearsky": ("맑음", "☀️" if is_day else "🌙"),
+        "fair": ("대체로 맑음", "🌤️" if is_day else "🌙"),
+        "partlycloudy": ("구름 조금", "⛅" if is_day else "☁️"),
+        "cloudy": ("흐림", "☁️"),
+        "fog": ("안개", "🌫️"),
+    }
+    return table.get(base, ("알 수 없음", "🌡️"))
+
+
+async def fetch_met_no(client: httpx.AsyncClient, lat: float, lon: float) -> dict:
+    r = await client.get(
+        "https://api.met.no/weatherapi/locationforecast/2.0/compact",
+        params={"lat": round(lat, 2), "lon": round(lon, 2)},
+    )
+    r.raise_for_status()
+    first = r.json()["properties"]["timeseries"][0]["data"]
+    temp = first["instant"]["details"]["air_temperature"]
+    nxt = first.get("next_1_hours") or first.get("next_6_hours") or first.get("next_12_hours") or {}
+    symbol = nxt.get("summary", {}).get("symbol_code", "")
+    label, icon = met_label(symbol)
+    return {"temp_c": round(float(temp), 1), "label": label, "icon": icon,
+            "is_day": not symbol.endswith("_night"), "source": "MET Norway"}
+
+
 @app.get("/api/weather", tags=["지도"])
 async def weather(
     lat: float = Query(..., ge=-90, le=90, description="위도"),
     lon: float = Query(..., ge=-180, le=180, description="경도"),
 ):
-    """좌표의 현재 날씨. 프론트엔드 → FastAPI → Open-Meteo 순서로 호출합니다."""
+    """좌표의 현재 날씨. 프론트엔드 → FastAPI → 무료 날씨 API 순서로 호출합니다.
+    Open-Meteo 를 먼저 시도하고, 요청 제한 등으로 실패하면 MET Norway 로 대신 조회합니다."""
     key = (round(lat, 1), round(lon, 1))  # 좌표를 뭉뚱그려 캐시 적중률을 높임
     hit = _weather_cache.get(key)
     if hit and time.time() - hit[0] < WEATHER_TTL:
         return hit[1]
-    try:
-        async with httpx.AsyncClient(timeout=8, headers={"User-Agent": "my-intro-api/1.0 (class project)"}) as client:
-            r = await client.get(
-                "https://api.open-meteo.com/v1/forecast",
-                params={"latitude": key[0], "longitude": key[1], "current": "temperature_2m,weather_code,is_day"},
-            )
-            r.raise_for_status()
-            cur = r.json()["current"]
-    except httpx.HTTPStatusError as e:
-        raise HTTPException(status_code=502, detail=f"날씨 서버가 오류를 돌려줬습니다 (HTTP {e.response.status_code})")
-    except httpx.HTTPError as e:
-        raise HTTPException(status_code=502, detail=f"날씨 서버에 연결하지 못했습니다 ({type(e).__name__})")
-    except (KeyError, ValueError):
-        raise HTTPException(status_code=502, detail="날씨 응답을 해석하지 못했습니다")
-    label, icon = WMO.get(int(cur.get("weather_code", -1)), ("알 수 없음", "🌡️"))
-    data = {
-        "temp_c": round(float(cur["temperature_2m"]), 1),
-        "label": label,
-        "icon": icon,
-        "is_day": bool(cur.get("is_day", 1)),
-        "source": "Open-Meteo",
-    }
-    _weather_cache[key] = (time.time(), data)
-    return data
+    errors = []
+    async with httpx.AsyncClient(timeout=8, headers=UA) as client:
+        for fetch in (fetch_open_meteo, fetch_met_no):
+            try:
+                data = await fetch(client, key[0], key[1])
+                _weather_cache[key] = (time.time(), data)
+                return data
+            except httpx.HTTPStatusError as e:
+                errors.append(f"{fetch.__name__}: HTTP {e.response.status_code}")
+            except httpx.HTTPError as e:
+                errors.append(f"{fetch.__name__}: {type(e).__name__}")
+            except (KeyError, IndexError, ValueError, TypeError):
+                errors.append(f"{fetch.__name__}: 응답 해석 실패")
+    raise HTTPException(status_code=502, detail="날씨 서버에 연결하지 못했습니다 (" + " / ".join(errors) + ")")
 
 
 # ---------- 3) 방문자 엽서 (메모리 저장: 서버가 재시작되면 사라집니다) ----------
