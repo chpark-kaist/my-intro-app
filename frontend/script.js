@@ -112,5 +112,32 @@ $("form-guestbook").addEventListener("submit", async (e) => {
   }
 });
 
-// 페이지가 열리면 방명록을 한 번 불러옵니다.
+// ---------- 서버 상태 표시 (페이지가 열릴 때 잠든 서버를 미리 깨우는 효과도 있음) ----------
+async function checkServer() {
+  const dot = $("api-dot");
+  const label = $("api-status");
+  try {
+    await callApi("/health");
+    dot.className = "dot ok";
+    label.textContent = "서버 연결됨";
+  } catch (err) {
+    dot.className = "dot err";
+    label.textContent = "서버에 연결할 수 없습니다";
+  }
+}
+
+// ---------- 테마 전환 (라이트/다크) ----------
+$("theme-toggle").addEventListener("click", () => {
+  const root = document.documentElement;
+  const isDark =
+    root.dataset.theme === "dark" ||
+    (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+  root.dataset.theme = isDark ? "light" : "dark";
+  try {
+    localStorage.setItem("theme", root.dataset.theme);
+  } catch (_) {}
+});
+
+// 페이지가 열리면 서버 상태와 방명록을 한 번 불러옵니다.
+checkServer();
 loadGuestbook();

@@ -8,7 +8,7 @@
 | --- | --- |
 | GitHub 저장소 | https://github.com/chpark-kaist/my-intro-app.git |
 | 프론트엔드 (Vercel) | https://chanceintro.vercel.app |
-| 백엔드 Swagger UI (Render) | https://my-intro-api.onrender.com |
+| 백엔드 Swagger UI (Render) | https://my-intro-api.onrender.com/docs |
 
 ## 프로젝트 구성
 
