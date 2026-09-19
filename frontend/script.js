@@ -3,7 +3,7 @@
 // Render에 배포한 뒤 받은 주소(예: https://my-intro-api.onrender.com)를
 // 아래 PROD_API_URL 에 붙여넣으세요. 끝에 슬래시(/)는 붙이지 않습니다.
 // ============================================================
-const PROD_API_URL = "https://YOUR-RENDER-APP.onrender.com";
+const PROD_API_URL = "https://my-intro-api.onrender.com";
 
 // 내 컴퓨터(localhost)에서 열었을 때는 로컬 백엔드, Vercel에서는 Render 백엔드를 사용
 const isLocal =
