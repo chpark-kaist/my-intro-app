@@ -48,6 +48,8 @@
   let raf = 0;
   let last = 0;
   const cursor = { x: -999, y: -999, on: false };
+  const selectHooks = [];   // 다른 모듈(날씨 등)이 '핀 선택'에 반응할 수 있도록
+  const layoutHooks = [];   // 지도가 다시 배치될 때(엽서 핀 위치 갱신 등)
 
   const BASE = "rgba(92, 128, 210, 0.42)";
   const WARM = "rgba(240, 195, 106, 0.78)";
@@ -205,26 +207,64 @@
       gF.shadowBlur = 0;
       gF.setLineDash([]);
     }
-    // 길을 따라 이동하는 빛
-    if (!reduce && arcCount >= 1) {
-      const total = Math.min(arcCount, N - 1);
-      const s = ((now * 0.00016) % 1) * total;
-      const i = Math.min(N - 2, Math.floor(s));
-      const p = bez(pts[i], ctrl(pts[i], pts[i + 1]), pts[i + 1], Math.min(1, s - i));
-      gF.fillStyle = "rgba(255,255,255,0.95)";
-      gF.shadowColor = "rgba(255,225,150,1)";
-      gF.shadowBlur = 16;
-      gF.beginPath();
-      gF.arc(p.x, p.y, 2.6, 0, TAU);
-      gF.fill();
-      gF.shadowBlur = 0;
+    // 길을 따라 이동하는 탈것: 비행기, 자전거 여행이 있던 구간은 자전거
+    if (!reduce && arcCount > 0) {
+      let i, t;
+      if (arcCount < arcTarget) {              // 선이 그려지는 중이면 선의 끝을 따라감
+        i = Math.min(N - 1, Math.floor(arcCount) + 1);
+        t = arcCount - Math.floor(arcCount);
+      } else if (arcCount >= 1) {              // 다 그려졌으면 전체 여정을 반복 이동
+        const total = Math.min(arcCount, N - 1);
+        const s = ((now * 0.00016) % 1) * total;
+        i = Math.min(N - 1, Math.floor(s) + 1);
+        t = s - Math.floor(s);
+      }
+      if (i) {
+        const a = pts[i - 1], b = pts[i], c = ctrl(a, b);
+        const p = bez(a, c, b, t), q = bez(a, c, b, Math.min(1, t + 0.02));
+        drawVehicle(p, Math.atan2(q.y - p.y, q.x - p.x), TRIPS[i].tag === "자전거" ? "bike" : "plane");
+      }
     }
+  }
+
+  // 비행기(콧등이 진행 방향), 자전거(옆모습, 왼쪽으로 가면 좌우 반전)
+  function drawVehicle(p, ang, kind) {
+    gF.save();
+    gF.translate(p.x, p.y);
+    gF.shadowColor = "rgba(255,225,150,1)";
+    gF.shadowBlur = 14;
+    gF.fillStyle = gF.strokeStyle = "#fff";
+    if (kind === "plane") {
+      gF.rotate(ang + Math.PI / 2);
+      gF.beginPath();
+      [[0, -11], [2, -4], [11, 2], [11, 4.5], [2, 2.5], [1.6, 8], [4.5, 10], [4.5, 11.5], [0, 10.5],
+        [-4.5, 11.5], [-4.5, 10], [-1.6, 8], [-2, 2.5], [-11, 4.5], [-11, 2], [-2, -4]]
+        .forEach(([x, y], k) => (k ? gF.lineTo(x, y) : gF.moveTo(x, y)));
+      gF.closePath();
+      gF.fill();
+    } else {
+      const flip = Math.cos(ang) < 0 ? -1 : 1;
+      gF.scale(flip, 1);
+      gF.rotate(Math.max(-0.35, Math.min(0.35, ang * flip)) * 0.5);
+      gF.lineWidth = 1.7;
+      gF.lineCap = gF.lineJoin = "round";
+      gF.beginPath(); gF.arc(-7, 4, 4.2, 0, TAU); gF.moveTo(11.2, 4); gF.arc(7, 4, 4.2, 0, TAU); gF.stroke();
+      gF.beginPath();
+      gF.moveTo(-7, 4); gF.lineTo(-2, -4); gF.lineTo(5, -4); gF.lineTo(7, 4);   // 뒷바퀴 - 안장 - 핸들 - 앞바퀴
+      gF.moveTo(-7, 4); gF.lineTo(0, 4); gF.lineTo(-2, -4);
+      gF.moveTo(0, 4); gF.lineTo(5, -4);
+      gF.moveTo(-3.6, -5); gF.lineTo(-0.6, -5); gF.moveTo(5, -4); gF.lineTo(4, -6.4);
+      gF.stroke();
+      gF.beginPath(); gF.arc(0.6, -9, 2.1, 0, TAU); gF.fill();                   // 라이더
+    }
+    gF.restore();
   }
 
   function layoutPins() {
     for (let i = 0; i < N; i++) {
       pinEls[i].style.transform = `translate3d(${px(TRIPS[i].lon).toFixed(1)}px, ${py(TRIPS[i].lat).toFixed(1)}px, 0)`;
     }
+    for (const f of layoutHooks) f();
   }
 
   // ---------- 애니메이션 루프 ----------
@@ -274,6 +314,7 @@
       `<button type="button" class="tp-close" aria-label="닫기">✕</button>` +
       `<p class="tp-meta"><span>${t.year}</span><span class="tp-tag">${esc(t.tag)}</span></p>` +
       `<h3 class="tp-title">${esc(t.place)}${t.country !== t.place ? `<small>${esc(t.country)}</small>` : ""}</h3>` +
+      `<p class="tp-weather" aria-live="polite"></p>` +
       `<div class="tp-media">${t.media.map(mediaHTML).join("")}</div>` +
       `<div class="tp-nav"><button type="button" data-nav="-1">← ${esc(prev.place)}</button><span>${i + 1} / ${N}</span><button type="button" data-nav="1">${esc(next.place)} →</button></div>`;
     panel.classList.remove("open");
@@ -300,6 +341,7 @@
     pinEls.forEach((el, k) => el.classList.toggle("on", k === i));
     chips.forEach((el, k) => { el.classList.toggle("on", k === i); if (k === i) scrollChip(el); });
     renderPanel(i);
+    for (const f of selectHooks) f(i, TRIPS[i]);
     flyTo(focusView(i));
     dotsDirty = true;
     request();
@@ -381,4 +423,27 @@
     visible = v;
     if (v) request();
   }, { threshold: 0.25 }).observe(stage);
+
+  // 서버에서 받은 데이터로 라벨/좌표가 바뀌었을 때 화면 갱신
+  function refresh() {
+    TRIPS.forEach((t, i) => {
+      pinEls[i].setAttribute("aria-label", `${t.year}년 ${t.place}, ${t.country}`);
+      pinEls[i].querySelector(".pin-label").textContent = `${t.place} · ${t.year}`;
+      chips[i].innerHTML = `<b>${t.year}</b>${esc(t.place)}`;
+    });
+    dotsDirty = true;
+    request();
+  }
+
+  // 다른 스크립트(엽서, 날씨, 명령 팔레트, 서버 데이터 반영)가 지도를 다룰 수 있는 접점
+  window.TripMap = {
+    stage, pinsEl, size: () => ({ W, H }), px, py,
+    view: () => ({ ...view }),
+    inv: (x, y) => ({ lon: view.cx + (x - W / 2) / view.z, lat: view.cy - (y - H / 2) / view.z }),
+    select, deselect, play, refresh, request,
+    toggleWorld: () => btnWorld.click(),
+    onSelect: (f) => selectHooks.push(f),
+    onLayout: (f) => layoutHooks.push(f),
+    redraw: () => { dotsDirty = true; request(); },
+  };
 })();

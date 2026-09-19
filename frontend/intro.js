@@ -50,8 +50,11 @@
       const y = window.scrollY, h = hero.offsetHeight;
       header.classList.toggle("scrolled", y > h - 90);
       if (!reduce && y < h * 1.2) {
-        heroBg.style.transform = `translate3d(0, ${(y * 0.3).toFixed(1)}px, 0) scale(${(1.06 + (y / h) * 0.06).toFixed(3)})`;
-        heroInner.style.opacity = String(Math.max(0, 1 - y / (h * 0.75)));
+        // 스크롤할수록 소실점을 향해 빨려 들어가듯 확대: 도로를 달리는 느낌
+        const p = Math.min(1, y / (h * 0.95));
+        heroBg.style.transform = `translate3d(0, ${(y * 0.1).toFixed(1)}px, 0) scale(${(1.06 + p * p * 0.9 + p * 0.25).toFixed(3)})`;
+        heroInner.style.opacity = String(Math.max(0, 1 - y / (h * 0.62)));
+        heroInner.style.transform = `translate3d(0, ${(-y * 0.22).toFixed(1)}px, 0)`;
       }
     });
   }

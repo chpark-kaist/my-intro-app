@@ -5,11 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>박찬휘 | 자기소개</title>
   <meta name="description" content="달리고, 페달을 밟고, 떠나는 사람. 한국채권투자운용 박찬휘의 개인 소개 페이지" />
+  <meta name="theme-color" content="#0a1230" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="박찬휘" />
+  <meta property="og:title" content="박찬휘 | 달리고, 페달을 밟고, 떠나는 사람" />
+  <meta property="og:description" content="사진과 영상으로 그린 나의 여행 지도. 핀을 눌러 보고, 엽서도 남겨 보세요." />
+  <meta property="og:url" content="https://chanceintro.vercel.app/" />
+  <meta property="og:image" content="https://chanceintro.vercel.app/media/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="박찬휘 | 달리고, 페달을 밟고, 떠나는 사람" />
+  <meta name="twitter:description" content="사진과 영상으로 그린 나의 여행 지도. 핀을 눌러 보고, 엽서도 남겨 보세요." />
+  <meta name="twitter:image" content="https://chanceintro.vercel.app/media/og.jpg" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8C%8F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="intro.css" />
+  <link rel="stylesheet" href="extras.css" />
   <script>
     // 첫 화면이 번쩍이지 않도록 저장된 테마를 먼저 적용하고, JS가 켜져 있음을 표시
     document.documentElement.classList.add("js");
@@ -29,6 +43,10 @@
         <a href="#moves">관심사</a>
         <a href="#practice">실습</a>
         <a href="#links">연락</a>
+        <button id="kbdHint" class="kbd-hint" type="button" aria-label="빠른 이동 열기 (Ctrl+K)" title="빠른 이동 (Ctrl+K)">
+          <span class="kk">Ctrl</span><span class="kk">K</span>
+          <svg class="mag" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
         <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">
           <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
           <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -75,6 +93,7 @@
         <div class="about-wrap">
           <figure class="polaroid reveal tilt">
             <img src="media/img/mn-goat.webp" alt="염소 옆에 쪼그려 앉아 웃는 모습" width="960" height="720" loading="lazy" />
+            <button class="goat-hit" type="button" data-goat aria-label="염소를 눌러 보세요"></button>
             <figcaption>몽골 초원에서</figcaption>
           </figure>
           <div class="about-body reveal">
@@ -114,6 +133,7 @@
             <div class="map-ui">
               <button id="btnPlay" class="chip-btn" type="button" aria-pressed="false">▶ 여정 재생</button>
               <button id="btnWorld" class="chip-btn" type="button">🌍 전체 보기</button>
+              <button id="btnCard" class="chip-btn" type="button" aria-pressed="false">✉️ <span class="lbl">엽서 남기기</span></button>
             </div>
             <p class="map-hint" id="mapHint">핀을 눌러 보세요</p>
           </div>
@@ -121,6 +141,14 @@
         </div>
 
         <div class="timeline reveal" id="timeline" role="list" aria-label="여행 목록"></div>
+
+        <div class="trip-stats reveal" id="tripStats" aria-label="여행 통계">
+          <div class="stat"><div><b data-km>0</b><em>km</em></div><span>핀을 시간순으로 이어 붙인 직선거리</span></div>
+          <div class="stat"><div><b data-laps>0</b><em>바퀴</em></div><span data-laps-note>지구 둘레 기준</span></div>
+          <div class="stat"><div><b data-long>0</b><em>km</em></div><span data-long-note>가장 먼 한 구간</span></div>
+        </div>
+        <p class="api-badge" id="apiBadge" data-state="pending" aria-live="polite"></p>
+        <p class="stat-note">도시 중심 좌표를 기준으로 한 근사값이며, 실제 이동 경로와는 달라요. 지도 위 엽서는 서버가 재시작되면 사라져요.</p>
       </div>
     </section>
 
@@ -178,6 +206,56 @@
         </div>
       </div>
     </section>
+
+    <!-- 이 페이지를 어떻게 만들었나 -->
+    <section id="ai" class="section">
+      <div class="wrap">
+        <details class="ai-card reveal">
+          <summary>
+            <span class="ai-ico" aria-hidden="true">🤖</span>
+            <span class="ai-sum"><strong>이 페이지는 AI와 함께 만들었어요</strong><small>눌러서 어떻게 만들었는지 보기</small></span>
+          </summary>
+          <div class="ai-body">
+            <div>
+              <h3>함께한 AI</h3>
+              <p>Anthropic의 Claude를 코딩 도구인 Claude Code로 사용했어요.</p>
+            </div>
+            <div>
+              <h3>사람이 한 일</h3>
+              <ul>
+                <li>페이지의 방향과 컨셉 결정</li>
+                <li>사진·영상 선택, 공개할 정보의 범위 결정</li>
+                <li>결과를 직접 보고 고칠 점 요청</li>
+              </ul>
+            </div>
+            <div>
+              <h3>AI가 한 일</h3>
+              <ul>
+                <li>HTML·CSS·JavaScript와 FastAPI 코드 작성</li>
+                <li>사진 크기 줄이기와 위치정보 제거</li>
+                <li>브라우저에서 화면과 동작 테스트</li>
+              </ul>
+            </div>
+            <div>
+              <h3>사용한 기술</h3>
+              <ul class="tags">
+                <li>HTML · CSS · JavaScript</li><li>Canvas</li><li>FastAPI</li><li>Vercel</li><li>Render</li><li>GitHub</li>
+              </ul>
+              <p class="ai-small">프레임워크 없이 만들었고, 지도는 캔버스에 직접 그렸어요.</p>
+            </div>
+            <div class="ai-wide">
+              <h3>참고한 자료</h3>
+              <p class="ai-small">
+                육지 데이터: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (퍼블릭 도메인) ·
+                날씨: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> ·
+                글꼴: <a href="https://github.com/orioncactus/pretendard" target="_blank" rel="noopener">Pretendard</a> (OFL) ·
+                소스 코드: <a href="https://github.com/chpark-kaist/my-intro-app" target="_blank" rel="noopener">GitHub</a>
+              </p>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -186,11 +264,23 @@
     </div>
   </footer>
 
+  <button id="goatFab" class="goat-fab" type="button" aria-label="숨은 염소 부르기: 누르면 염소 떼가 달려가요">
+    <span class="goat-bubble">숨은 이스터에그! 눌러보세요</span>
+    <span class="goat-emoji" aria-hidden="true">🐐</span>
+    <span class="goat-count" aria-hidden="true"></span>
+  </button>
+
   <script src="theme.js"></script>
+  <script src="config.js"></script>
   <script src="data.js"></script>
   <script src="map-data.js"></script>
   <script src="lightbox.js"></script>
   <script src="map.js"></script>
+  <script src="trips-api.js"></script>
+  <script src="weather.js"></script>
+  <script src="postcards.js"></script>
+  <script src="goat.js"></script>
+  <script src="palette.js"></script>
   <script src="intro.js"></script>
 </body>
 </html>
