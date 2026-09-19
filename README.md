@@ -6,9 +6,9 @@
 
 | 구분 | 주소 |
 | --- | --- |
-| GitHub 저장소 | https://github.com/YOUR_GITHUB_ID/YOUR_REPO |
-| 프론트엔드 (Vercel) | https://YOUR-APP.vercel.app |
-| 백엔드 Swagger UI (Render) | https://YOUR-RENDER-APP.onrender.com/docs |
+| GitHub 저장소 | https://github.com/chpark-kaist/my-intro-app.git |
+| 프론트엔드 (Vercel) | https://chanceintro.vercel.app |
+| 백엔드 Swagger UI (Render) | https://my-intro-api.onrender.com |
 
 ## 프로젝트 구성
 
