@@ -126,18 +126,6 @@ async function checkServer() {
   }
 }
 
-// ---------- 테마 전환 (라이트/다크) ----------
-$("theme-toggle").addEventListener("click", () => {
-  const root = document.documentElement;
-  const isDark =
-    root.dataset.theme === "dark" ||
-    (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
-  root.dataset.theme = isDark ? "light" : "dark";
-  try {
-    localStorage.setItem("theme", root.dataset.theme);
-  } catch (_) {}
-});
-
 // 페이지가 열리면 서버 상태와 방명록을 한 번 불러옵니다.
 checkServer();
 loadGuestbook();

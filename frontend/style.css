@@ -189,6 +189,66 @@ code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
 .facts dt { color: var(--muted); font-size: 0.9rem; }
 .facts dd { margin: 0; font-weight: 600; text-align: right; }
 
+.about-text { margin: 0 0 18px; }
+.hello {
+  position: relative;
+  margin: 0;
+  padding: 18px 20px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--accent-soft);
+  font-size: 1.02rem;
+}
+.hello-tag {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* 서브 페이지 머리말 */
+.page-head { position: relative; overflow: hidden; padding: 64px 0 24px; }
+.page-head::before {
+  content: "";
+  position: absolute;
+  inset: -60% -20% auto auto;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+  pointer-events: none;
+}
+.page-head h1 {
+  margin: 0 0 14px;
+  font-size: clamp(1.9rem, 6vw, 2.8rem);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+.page-head .lead { margin-bottom: 18px; }
+.section.tight { padding-top: 24px; }
+
+/* 다른 페이지로 이동하는 큰 링크 카드 */
+.link-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.link-card:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--accent); }
+.link-card h3 { margin: 0 0 6px; font-size: 1.15rem; letter-spacing: -0.02em; }
+.link-card p { margin: 0 0 12px; color: var(--muted); font-size: 0.95rem; }
+.link-card .tags { margin: 0; }
+.link-card .arrow { color: var(--accent); font-size: 1.6rem; font-weight: 700; }
+
 /* ---------- 카드 ---------- */
 .grid { display: grid; gap: 14px; }
 .grid.three { grid-template-columns: repeat(3, 1fr); }
@@ -298,7 +358,7 @@ input::placeholder { color: var(--muted); }
 .gb-list .who { font-weight: 700; }
 .gb-list .when { margin-left: 8px; color: var(--muted); font-size: 0.78rem; }
 
-.docs-link { margin: 18px 0 0; font-weight: 600; }
+.docs-link { margin-top: 20px; }
 
 /* ---------- 푸터 ---------- */
 .site-footer { padding: 32px 0 48px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; }

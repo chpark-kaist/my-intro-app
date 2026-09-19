@@ -15,9 +15,11 @@
 ```
 my-intro-app/
 ├── frontend/            # 정적 웹 페이지 (Vercel 배포)
-│   ├── index.html       # 자기소개 + API 연동 실습 (한 페이지)
-│   ├── style.css
-│   └── script.js        # 백엔드 API 호출 (fetch)
+│   ├── index.html       # 개인 소개 페이지
+│   ├── api-demo.html    # 프론트엔드·백엔드 연동 실습 페이지
+│   ├── style.css        # 공통 스타일 (라이트/다크 테마)
+│   ├── theme.js         # 테마 전환
+│   └── api.js           # 백엔드 API 호출 (fetch)
 ├── backend/             # FastAPI 서버 (Render 배포)
 │   ├── main.py
 │   └── requirements.txt
@@ -27,12 +29,12 @@ my-intro-app/
 
 ## 주요 기능
 
-- 개인 소개 페이지 (소개, 관심사, 링크)
-- 소개 페이지 안의 "API 연동" 섹션에서 백엔드 호출
+- 개인 소개 페이지 (`index.html`): 소개, 프로필, 관심사, 링크
+- 연동 실습 페이지 (`api-demo.html`): 백엔드 API 호출. 두 페이지는 서로 링크로 이동할 수 있습니다.
   - `GET /health` : 서버 상태 확인
   - `GET /api/hello?name=` : 인사 메시지
   - `GET /api/guestbook`, `POST /api/guestbook` : 방명록 조회/등록 (메모리 저장)
-- 페이지에서 Swagger UI(`/docs`)로 이동하는 링크 제공
+- 연동 실습 페이지에서 Swagger UI(`/docs`)로 이동하는 링크 제공
 
 ## 기술 스택
 
@@ -52,6 +54,7 @@ uvicorn main:app --reload
 # http://127.0.0.1:8000/docs
 
 # 프론트엔드: VS Code Live Server로 frontend/index.html 열기
+# (localhost에서 열면 자동으로 로컬 백엔드 http://127.0.0.1:8000 을 호출합니다)
 ```
 
 ## 참고
