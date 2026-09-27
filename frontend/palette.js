@@ -34,6 +34,7 @@
       list.push(
         { title: "여정 재생", hint: "지도", keys: "play 재생 시작 여행", run: () => onMap(() => map.play()) },
         { title: "전체 보기 / 아시아 보기", hint: "지도", keys: "world 세계 전체 지구", run: () => onMap(() => map.toggleWorld()) },
+        { title: "지구본 보기", hint: "지도", keys: "globe 지구본 3d 회전 낮 밤", run: () => onMap(() => map.toggleGlobe()) },
       );
       if (window.startPostcard) list.push({ title: "엽서 남기기", hint: "지도", keys: "postcard 엽서 방명록 남기기", run: () => onMap(() => window.startPostcard()) });
     }
